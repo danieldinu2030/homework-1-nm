@@ -81,8 +81,6 @@ Notice that \( L \) is a **row-stochastic matrix**: the sum of each row equals 1
 
 In addition to graph-based representations, the Markov chain describing the robot’s movement in a labyrinth can be reformulated as a **system of linear equations**.
 
-### Liniar Equation System
-
 Let $$p ∈ ℝ^{m·n}$$ be a vector of winning probabilities for each cell in the labyrinth, where `m` and `n` are the maze's dimensions. 
 Each entry $$p_i$$ represents the probability that the robot, starting from state `i`, eventually reaches a winning exit.
 
