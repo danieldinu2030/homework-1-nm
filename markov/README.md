@@ -8,14 +8,14 @@
 ## Overview
 
 The problem focuses on navigating a robot through a labyrinth, starting from a given position. The goal is to determine the probability that the robot 
-will reach a **winning exit**, given that at each step it randomly selects one of the available directions (up, down, left, right — no diagonal moves allowed). 
+will reach a **winning exit**, given that at each step it selects one of the available directions (up, down, left, right — no diagonal moves allowed). 
 The robot avoids revisiting previously visited cells.
 
 There are two types of exits in the labyrinth:
 
 - **Winning exits** (marked green): Located on the **top and bottom** edges of the labyrinth. Reaching one of these exits means the
   robot has successfully "escaped" with a winning probability of **1**.
-- **Losing exits** (marked red): Found on the **left and right** edges. Reaching one of these ends the game in a loss, with a probability of **0**.
+- **Losing exits** (marked red): Found on the **left and right** edges. Reaching one of these ends in a loss, with a probability of **0**.
 
 Walls may exist between adjacent cells, blocking movement between them. For example, moving directly from cell (1, 1) to (1, 2) might not be possible due to such walls.
 The idea is to model the problem probabilistically and then apply heuristic methods (e.g., greedy algorithms based on computed probabilities) to guide the 
@@ -42,5 +42,37 @@ Thus, the labyrinth becomes a probabilistic model:
 - **Transitions** represent possible valid moves with equal probabilities.
 - The **Markov chain** is stored as a **weighted directed graph**, with weights corresponding to movement probabilities.
 
-This abstraction allows us to analyze the robot's behavior using probability theory and efficiently calculate its chances of winning or losing.
+This abstraction allows us to analyse the robot's behavior using probability theory and efficiently calculate its chances of winning or losing.
+Below are the most important features of this way of modelling the problem.
 
+### Adjacency Matrix for a Directed Graph
+
+The **adjacency matrix** of a directed graph, similar to that of an undirected graph, is defined as:
+
+$$
+A = (A_{ij})_{i,j \in \{1, ..., n\}} \in \{0, 1\}^{n \times n}
+$$
+
+Where:
+
+- $$\( A_{ij} = 1 \)$$, if there is a **transition** from state \( i \) to state \( j \),
+- $$\( A_{ij} = 0 \)$$, otherwise.
+
+In the context of the labyrinth:
+
+- The submatrix \( A(1:n, 1:n) \) is **symmetric**,
+- This symmetry exists because **walls are bidirectional** — if a transition from state \( i \) to state \( j \) is possible, then the reverse transition is also possible.
+
+This matrix structure models **bidirectional movement** between adjacent, non-blocked cells in the maze.
+
+### Link Matrix (Transition Probability Matrix)
+
+The **link matrix** is a more powerful representation than the adjacency matrix. While structurally similar, the key difference lies in the meaning of the values it contains.
+
+In a **link matrix**, each element represents the **transition probability** from one state to another in the Markov chain.
+Using the notation $$p_{ij}$$, the matrix is defined as:
+
+- $$L_{ij} = p_{ij}$$, if 0 < p_{ij} ≤ 1
+- $$L_{ij} = 0$$, otherwise
+
+Notice that \( L \) is a **row-stochastic matrix**: the sum of each row equals 1.
