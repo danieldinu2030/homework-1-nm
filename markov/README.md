@@ -72,7 +72,38 @@ The **link matrix** is a more powerful representation than the adjacency matrix.
 In a **link matrix**, each element represents the **transition probability** from one state to another in the Markov chain.
 Using the notation $$p_{ij}$$, the matrix is defined as:
 
-- $$L_{ij} = p_{ij}$$, if 0 < p_{ij} ≤ 1
+- $$L_{ij} = p_{ij}$$, if 0 < $$p_{ij}$$ ≤ 1
 - $$L_{ij} = 0$$, otherwise
 
 Notice that \( L \) is a **row-stochastic matrix**: the sum of each row equals 1.
+
+### Reformulating the Problem as a Linear System
+
+In addition to graph-based representations, the Markov chain describing the robot’s movement in a labyrinth can be reformulated as a **system of linear equations**.
+
+### Liniar Equation System
+
+Let $$p ∈ ℝ^{m·n}$$ be a vector of winning probabilities for each cell in the labyrinth, where `m` and `n` are the maze's dimensions. 
+Each entry $$p_i$$ represents the probability that the robot, starting from state `i`, eventually reaches a winning exit.
+
+For example, suppose the robot in state 1 can:
+- Move to state 4 with a probability of 1/2, and
+- Move to the WIN state (where the game is won) with a probability of 1/2.
+
+Then the equation becomes:
+
+$$p_1 = (1/2) * p_4 + (1/2) * p_{WIN} = (1/2) * p_4 + 1/2$$
+
+Writing similar equations for all states results in a linear system, where the influence of WIN and LOSE states is encoded in the right-hand side. 
+
+This system takes the form: `p = G·p + c`
+
+- `G` is a matrix capturing transition probabilities between non-terminal states
+- `c` is a vector containing contributions from terminal states (e.g., WIN with probability 1)
+- `p` is the unknown vector we want to solve for
+
+This form is particularly suitable for **iterative methods** such as the **Jacobi method**. The iteration step is defined as:
+
+$$x_{k+1} = G·x_k + c$$
+
+This iterative scheme efficiently computes the probability of reaching a winning exit from any given state, especially in large, sparse labyrinths.
