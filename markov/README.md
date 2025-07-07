@@ -4,6 +4,7 @@
 
 - [Overview](#overview)
 - [Theoretical References](#theoretical-references)
+- [Functions](#functions)
 
 ## Overview
 
@@ -104,4 +105,118 @@ This form is particularly suitable for **iterative methods** such as the **Jacob
 
 $$x_{k+1} = G·x_k + c$$
 
-This iterative scheme efficiently computes the probability of reaching a winning exit from any given state, especially in large, sparse labyrinths.
+This iterative scheme efficiently computes the probability of reaching a winning exit from any given state, especially in large labyrinths.
+
+### Heuristic Search
+
+The distribution of probabilities within the Markov chain supports an intuitive observation: **states closer to the WIN state tend to have higher winning probabilities**, 
+while those nearer to the LOSE state have lower ones. This insight motivates the use of a **heuristic search algorithm** to guide the robot from its starting position toward a winning exit.
+
+A heuristic algorithm is not guaranteed to always find the optimal solution (e.g., the shortest path), but it has the advantage of being significantly faster than exhaustive search methods. In the context of navigating a labyrinth, this trade-off between accuracy and performance is often acceptable, especially for large labyrinths.
+
+A simple **greedy algorithm** can be employed, guided by the precomputed winning probabilities:
+
+- Starting from the initial position, the robot evaluates its unvisited neighboring cells.
+- It **chooses the neighbor with the highest winning probability**, moving towards more promising regions of the maze.
+- This strategy is implemented on top of a **Depth-First Search (DFS)** framework to manage backtracking in case of dead ends.
+
+While not always optimal, this approach typically yields good paths quickly and benefits directly from the probabilistic analysis previously computed using the Markov model.
+
+### Maze Input Encoding: Cohen-Sutherland-Inspired Wall Representation
+
+To process the maze as input data efficiently, a **condensed binary encoding** of each cell is required. Inspired by the **Cohen-Sutherland algorithm** (originally used in computer graphics), a compact representation is adopted for the maze structure.
+
+### Labyrinth Representation
+
+A very efficient way of representing the maze is using the **Cohen-Sutherland encoding**. The labyrinth is stored as an `m × n` matrix, 
+where each entry is a **4-bit integer** representing the presence of walls around that cell. Each bit encodes whether movement in a certain direction is blocked by a wall:
+
+- **Bit b3 (value 8)**: Wall to the **North** of the cell
+- **Bit b2 (value 4)**: Wall to the **South** of the cell
+- **Bit b1 (value 2)**: Wall to the **East** of the cell
+- **Bit b0 (value 1)**: Wall to the **West** of the cell
+
+Each cell value can be interpreted in binary form as  $$\left(b_{3}b_{2}b_{1}b_{0}\right)_{(2)}$$, where:
+- A bit set to **1** indicates that direction is **blocked by a wall**
+- A bit set to **0** means movement in that direction is **allowed**
+
+This encoding facilitates efficient parsing and use of the maze in algorithms by compactly describing connectivity and movement constraints between adjacent cells.
+
+## Functions
+
+Now that the theoretical background is fully documented, here are the necessary MATLAB functions:
+
+#### 1. `function [Labyrinth] = parse_labyrinth(file_path)`
+
+**Purpose**: Reads a text file containing the encoded labyrinth and returns the matrix of encodings.
+
+**Input file format**: 
+
+$$m \space n$$
+
+$$l_{11} \space l_{12} \space ... \space l_{1n}$$
+
+$$l_{21} \space l_{22} \space ... \space l_{2n}$$
+
+$$...$$
+
+$$l_{m1} \space l_{m2} \space ... \space l_{mn}$$
+
+
+#### 2. `function [Adj] = get_adjacency_matrix(Labyrinth)`
+
+**Purpose**: Receives the matrix of encodings and returns the **adjacency matrix** of the associated directed graph (Markov chain).
+
+#### 3. `function [Link] = get_link_matrix(Labyrinth)`
+
+**Purpose**: Receives the maze encoding matrix and returns the **link matrix** – containing the **transition probabilities** between states.
+
+#### 4. `function [G, c] = get_Jacobi_parameters(Link)`
+
+**Purpose**: Receives the link matrix and returns:
+- `G` – iteration matrix for Jacobi method
+- `c` – constant vector for Jacobi method
+
+#### 5. `function [x, err, steps] = perform_iterative(G, c, x0, tol, max_steps)`
+
+**Purpose**: Uses the **Jacobi iterative method** to solve the linear system approximately.
+
+**Parameters**:
+- `x0` – initial guess vector
+- `tol` – relative error tolerance (convergence threshold)
+- `max_steps` – maximum allowed iterations
+
+**Returns**:
+- `x` – approximated solution
+- `err` – final relative error
+- `steps` – number of iterations performed
+
+#### 6. `function [path] = heuristic_greedy(start_position, probabilities, Adj)`
+
+**Purpose**: Uses a **greedy search algorithm** to find a valid path to the WIN state.
+
+**Parameters**:
+- `start_position` – index of starting cell (in range `[1, m*n]`)
+- `probabilities` – extended vector of win/loss probabilities (includes WIN and LOSE)
+- `Adj` – adjacency matrix of the Markov chain
+
+**Returns**:
+- `path` – a valid path as a vector of linear indices
+
+#### 7. `function [decoded_path] = decode_path(path, lines, cols)`
+
+**Purpose**: Converts the linear index path into a list of (row, column) coordinates.
+
+**Parameters**:
+- `path` – vector of linear indices representing the path
+- `lines`, `cols` – maze dimensions
+
+**Returns**:
+- `decoded_path` – a matrix with two columns: `[row, column]` for each step in the path
+
+## Running the Task
+
+- Check the `run_all_tasks.m` file and change marked parameters if desired (input file name, Jacobi tolerance, etc)
+- Ensure that the input file exists at the specified path and is well-formatted
+- From the MATLAB/GNU Octave Command Window, enter `run_all_tasks` and inspect the output
+##
