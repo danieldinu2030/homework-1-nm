@@ -24,11 +24,11 @@ function run_all_tasks()
     [solution, error, steps] = perform_iterative(jacobiMatrix, jacobiVector, x0, tol, max_steps);
     solution = [solution; 1; 1];  % extend probability vector
 
-    % Compute path using heuristic
+    % Compute path using heuristic greedy
     % DO NOT MODIFY
     path = heuristic_greedy(2, solution, adjacencyMatrix);
     [lines, cols] = size(Labyrinth);
 
-    % Decode path and display it in COmmand Window (keep semicolon removed)
+    % Decode path and display it in Command Window (keep semicolon removed)
     decodedPath = decode_path(path, lines, cols)
 end
