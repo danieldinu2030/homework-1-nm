@@ -5,6 +5,7 @@
 - [Overview](#overview)
 - [Theoretical References](#theoretical-references)
 - [Functions](#functions)
+- [Running the Tasks](#running-the-tasks)
 
 ## Overview
 
@@ -214,9 +215,8 @@ $$l_{m1} \space l_{m2} \space ... \space l_{mn}$$
 **Returns**:
 - `decoded_path` – a matrix with two columns: `[row, column]` for each step in the path
 
-## Running the Task
+## Running the Tasks
 
 - Check the `run_all_tasks.m` file and change marked parameters if desired (input file name, Jacobi tolerance, etc)
 - Ensure that the input file exists at the specified path and is well-formatted
 - From the MATLAB/GNU Octave Command Window, enter `run_all_tasks` and inspect the output
-##
