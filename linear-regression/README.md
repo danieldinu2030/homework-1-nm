@@ -203,7 +203,7 @@ The intercept term $$θ_0$$ is assumed to be **0**. The function is tested using
 
 #### 6. `function [Theta] = normal_equation(FeaturesMatrix, Y, tol, iter)`
 
-**Purpose**: Computes the coefficients $$θ_1, θ_2, ..., θ_n \in \mmathbb{R}$$ using the **conjugate gradient method** over at most `iter` steps.  
+**Purpose**: Computes the coefficients $$θ_1, θ_2, ..., θ_n \in \mathbb{R}$$ using the **conjugate gradient method** over at most `iter` steps.  
 The intercept term $$θ_0$$ is assumed to be **0**. If the system matrix is **not positive definite**, `Theta` will be a zero vector and returned immediately.
 
 **Inputs**:
