@@ -126,6 +126,121 @@ L1 regularisation is especially useful when the dataset contains many irrelevant
 
 Now that the theoretical background is fully documented, below are the necessary MATLAB functions to perform the tasks:
 
+#### 1. `function [Y, InitialMatrix] = parse_data_set_file(file_path)`
 
+**Purpose**: Receives a relative path to a text file containing dataset entries and returns:
+- `Y` – output vector (target values)
+- `InitialMatrix` – cell array containing both numerical and string values from the dataset
+
+**Input File Format**:
+
+$$m \space n$$
+
+$$Y_{11} \space x_{11} \space x_{12} \space ... \space x_{1n}$$
+
+$$Y_{21} \space x_{21} \space x_{22} \space ... \space x_{2n}$$
+
+$$...$$
+
+$$Y_{m1} \space x_{m1} \space x_{m2} \space ... \space x_{mn}$$
+
+Where:
+- $$m$$ is the number of training examples (rows)
+- $$n$$ is the number of predictors (features)
+- $$Y_{ij}$$ represents the output value for the i-th example
+- $$x_{ij}$$ represents the j-th feature of the i-th example
+
+#### 2. `function [Y, InitialMatrix] = parse_csv_file(file_path)`
+
+**Purpose**: Receives a relative path to the `.csv` file containing dataset entries and returns:
+- `Y` – output vector (target values)
+- `InitialMatrix` – cell array containing the entire dataset, including both numeric and string values
+
+> **Note:** For details regarding the format of the `.csv` input, check the attached `Example.csv` file.
+
+#### 3. `function [FeatureMatrix] = prepare_for_regression(InitialMatrix)`
+
+**Purpose**: Transforms the initial data matrix (`InitialMatrix`) into a numeric-only matrix suitable for regression tasks.
+
+**Details**:
+- Replaces affirmative/negative strings with corresponding numeric values:
+  - `'yes'` → `1`
+  - `'no'` → `0`
+- Encodes strings from the `'furnishing'` category:
+  - `'semi-furnished'` → `[1, 0]`
+  - `'unfurnished'` → `[0, 1]`
+  - `'furnished'` → `[0, 0]`
+- Ensures that the resulting matrix (`FeatureMatrix`) contains only numeric data, making it compatible with linear or logistic regression algorithms
+
+#### 4. `function [Error] = linear_regression_cost_function(Theta, Y, FeatureMatrix)`
+
+**Purpose**: Computes the cost function (loss) for a linear regression model based on the previous theoretical formulation.
+For simplicity:
+  - The error term $$\varepsilon$$ in $$h_\theta(x)$$ is omitted.
+  - The intercept term $$\theta_0$$ is assumed to be `0`.
+
+**Inputs**:
+- `Theta`: Column vector of coefficients $$\[ \theta_1, \ldots, \theta_n \in \mathbb{R} \]$$.
+- `FeatureMatrix`: Matrix containing the predictor values. Each row `i` corresponds to a feature vector $$x^{(i)}$$.
+- `Y`: Column vector of actual output values (targets), $$y^{(i)}$$.
+
+**Output**: `Error`: The computed scalar cost for the given parameters and dataset.
+
+#### 5. `function [Theta] = gradient_descent(FeatureMatrix, Y, n, m, alpha, iter)`
+
+**Purpose**: Computes the coefficients $$θ_1, θ_2, ..., θ_n \in \mathbb{R} $$ using **gradient descent** over a number of `iter` steps.  
+The intercept term $$θ_0$$ is assumed to be **0**. The function is tested using data from the `.csv` file (parsed earlier).
+
+**Inputs**:
+- `FeatureMatrix` – matrix where each row `i` corresponds to the predictor vector $$x^{(i)}$$
+- `Y` – column vector of output values $$y^{(i)}$$
+- `n` – number of predictors
+- `m` – number of examples
+- `alpha` – learning rate (α)
+- `iter` – number of iterations to perform
+
+**Output**: The column vector θ.
+
+#### 6. `function [Theta] = normal_equation(FeaturesMatrix, Y, tol, iter)`
+
+**Purpose**: Computes the coefficients $$θ_1, θ_2, ..., θ_n \in \mmathbb{R}$$ using the **conjugate gradient method** over at most `iter` steps.  
+The intercept term $$θ_0$$ is assumed to be **0**. If the system matrix is **not positive definite**, `Theta` will be a zero vector and returned immediately.
+
+**Inputs**:
+- `FeaturesMatrix` – matrix containing predictor vectors (each row is a sample $$x^{(i)}$$)
+- `Y` – column vector containing actual output values $$y^{(i)}$$
+- `tol` – tolerance value for stopping
+- `iter` – maximum number of iterations
+
+**Output**: The column vector θ.
+
+#### 7. `function [Error] = lasso_regression_cost_function(Theta, Y, FeMatrix, lambda)`
+
+**Purpose**: Implements the Lasso regression cost function as described in the theoretical section, using two vectors, a matrix, and a scalar input.
+Once again, the intercept term $$θ_0$$ is assumed to be **0**.
+
+**Inputs**:
+- `Theta` – column vector of coefficients $$θ_1, θ_2, ..., θ_n \in \mathbb{R}$$.
+- `FeMatrix` – matrix containing predictor values (each row i represents $$x^{(i)}$$ as described theoretically).
+- `Y` – column vector containing actual output values (labels).
+- `lambda` – regularisation parameter $$\lambda$$ controlling the strength of the L1 regularisation.
+
+**Output**: `Error`: The computed scalar L1 regularisation cost for the given parameters and dataset.
+
+#### 8. `function [Error] = ridge_regression_cost_function(Theta, Y, FeMatrix, lambda)`
+
+**Purpose**: Implements the Ridge regression cost function as described in the theoretical section, using two vectors, a matrix, and a scalar input.
+Once again, the intercept term $$θ_0$$ is assumed to be **0**.
+
+- `Theta` – column vector of coefficients $$θ_1, θ_2, ..., θ_n \in \mathbb{R}$$.
+- `FeMatrix` – matrix containing predictor values (each row i represents $$x^{(i)}$$ as described theoretically).
+- `Y` – column vector containing actual output values (labels).
+- `lambda` – regularisation parameter $$\lambda$$ controlling the strength of the L2 regularisation.
+
+**Output**: `Error`: The computed scalar L2 regularisation cost for the given parameters and dataset.
 
 ## Running the Tasks
+
+- Check the `run_all_tasks.m` file and change marked parameters if desired (`.csv` file name, maximum iteration count, etc)
+- Ensure that the input files exist at the specified path and are well-formatted
+- From the MATLAB/GNU Octave Command Window, enter `run_all_tasks` and inspect the output
