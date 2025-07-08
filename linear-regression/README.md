@@ -4,6 +4,7 @@
 
 - [Overview](#overview)
 - [Optimisation Methods](#optimisation-methods)
+- [Regularisation Methods](#regularisation-methods)
 - [Functions](#functions)
 - [Running the Tasks](#running-the-tasks)
 
@@ -66,15 +67,64 @@ Update rule:  $$θ_j := θ_j - \alpha * \frac{∂J}{∂θ_j}(\theta)$$
 - It is effective for small datasets only, due to matrix inversion
 - To address this, the **Conjugate Gradient Method** is used as an efficient alternative for solving large systems
 
-Fundamental formula: $$θ_j = (X^{T} * X)^{-1} * X^{T} * Y$$
+Fundamental formula: $$θ = (X^{T} * X)^{-1} * X^{T} * Y$$
 
 Where:
 - $$X \in \mathbb{R}^{m \times n}$$ is the matrix of feature vectors.
 - $$Y \in \mathbb{R}^{m \times 1}$$ is the column vector of actual values.
 - $$θ \in \mathbb{R}^{n \times 1}$$ is the column vector of model coefficients.
 
+## Regularisation Methods
+
+In the field of Machine Learning, **regularisation** is a technique used to make a model more generalisable. 
+This means it helps the model reduce its variance error when encountering new data after training.
+
+The assignment features two types of regularisation techniques:
+
+### 1. L2 Regularisation (Ridge Regression)
+
+L2 regularisation focuses on finding a regression line that fits the data while introducing a small **bias**. 
+This means the line does not perfectly minimise the sum of squared distances between the predicted values and the training data points.
+
+The main idea is to **shrink the model coefficients** $$θ_0, θ_1, \dots, θ_n$$ towards zero. 
+This weakens the dependency between the output $$y^{(i)}$$ and certain input features  $$x_1, x_2, \dots, x_n$$, leading to a model that depends less on individual predictors.
+
+The L2 regularised cost function is defined as:
+
+$$
+J_{L2}(\theta) = \frac{1}{2m} \sum_{i=1}^{m} \left( h_\theta(x^{(i)}) - y^{(i)} \right)^2 + \lambda \sum_{j=1}^{n} \theta_j^2
+$$
+
+Where:
+- $$\lambda \sum_{j=1}^{n} \theta_j^2 $$ is the **L2 regularization term**
+- $$\lambda \in \mathbb{R}_+ $$ controls the **strength of the regularization**
+- $$\lambda$$ is usually selected via **cross-validation**, but will be provided in implementation for this case
+
+This approach helps prevent overfitting by discouraging overly complex models with large coefficients.
+
+### L1 Regularisation (Lasso Regression)
+
+L1 Regularisation is similar in purpose to L2 regularisation, aiming to reduce the complexity of the machine learning model. 
+However, Lasso Regression has a distinct effect: some of the model’s coefficients $$θ_0, θ_1, \dots, θ_n$$ can become exactly **zero**.
+
+This means that **certain predictors can be entirely removed** from the model, effectively performing **feature selection**. 
+The result is a simpler model that still aims to generalise well to new data.
+
+The L1 regularised cost function is defined as:
+
+$$
+J_{L1}(\theta) = \frac{1}{m} \sum_{i=1}^{m} \left( y^{(i)} - h_\theta(x^{(i)}) \right)^2 + \lambda ||\theta||_1
+$$
+
+Where:
+- $$||\theta||_1 = |\theta_0| + |\theta_1| + \cdots + |\theta_n|$$ is the **L1 norm** of the coefficient vector
+- $$\lambda \in \mathbb{R}_+$$ is the **regularisation parameter** that controls the strength of the penalty
+
+L1 regularisation is especially useful when the dataset contains many irrelevant or weak features, as it helps the model focus only on the most important ones.
 
 ## Functions
+
+Now that the theoretical background is fully documented, below are the necessary MATLAB functions to perform the tasks:
 
 
 
