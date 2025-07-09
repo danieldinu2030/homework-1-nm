@@ -262,11 +262,99 @@ $$
    \frac{∂J}{∂\Theta} = \frac{1}{m} \cdot \Delta + \frac{\lambda}{m} \cdot \Theta
 $$
 
+### Parameter Initialisation
+
+In neural networks, initialising the parameters (the elements of the weight matrices) with zero values is not feasible. 
+This leads to **symmetry** in the model, making all neurons in the same layer behave identically and rendering the network unable to learn effectively.
+
+Furthermore, zero initialisation causes the gradients to vanish, preventing the network from updating the weights during training — a well-known issue in deep learning called the **Vanishing Gradient Problem**. Parameters should be **randomly initialised** with values in the interval **(−ε, ε)**.
+
+An empirically effective value for **ε** is:
+
+$$
+\varepsilon_0 = \sqrt{\frac{6}{L_{prev} + L_{next}}}
+$$
+
 ## Functions
 
 Now that the theoretical background is fully documented, here are the necessary MATLAB functions:
 
-#### 1. 
+#### 1. `function [X, y] = load_dataset(path)`
+
+**Purpose**:  
+Loads a `.mat` file from the given relative path and returns the dataset:
+
+- `X`: A matrix where each row represents a data example (features).
+- `y`: A vector containing the corresponding labels (classes).
+
+#### 2. `function [X_train, y_train, X_test, y_test] = split_dataset(X, y, percent)`
+
+**Purpose**:  
+Splits the dataset into training and testing subsets according to the `percent parameter. The function also shuffles the data before splitting it.
+
+**Parameters**:
+- `X`, `y`: The full dataset and labels (as returned by `load_dataset`).
+- `percent`: A number between 0 and 1, indicating the fraction of data to be used for training.
+
+#### 3. `function [matrix] = initialise_weights(L_prev, L_next)`
+
+**Purpose**:  
+Initialises the weight matrix for the transformation between two neural network layers.
+
+**Parameters**:
+- `L_prev`: Number of neurons in the previous layer.
+- `L_next`: Number of neurons in the next layer.
+
+**Returns**:
+- `matrix`: A randomly initialised weight matrix with values from the interval **(−ε, ε)**.
+
+#### 4. `function [J, grad] = cost_function(params, X, y, lambda, input_layer_size, hidden_layer_size, output_layer_size)`
+
+**Purpose**:  
+Computes the cost function and gradients for a neural network with one hidden layer, using forward and backward propagation.
+
+**Parameters**:
+- `params`: A column vector containing all weights (unrolled from $$\Theta^{(1)} and \Theta^{Θ(2)}$$).
+- `X`: Feature matrix for training examples (without labels).
+- `y`: Vector of labels corresponding to the examples in `X`.
+- `lambda`: Regularisation parameter.
+- `input_layer_size`: Number of neurons in the input layer.
+- `hidden_layer_size`: Number of neurons in the hidden layer.
+- `output_layer_size`: Number of neurons in the output layer (equal to number of classes).
+
+**Returns**:
+- `J`: The value of the cost function for the current weights.
+- `grad`: A vector of the same size as `params`, containing the unrolled gradients computed via backpropagation.
+
+**Notes**:
+- You should reshape `params` into Θ(1) and Θ(2) using `reshape()`.
+- Compute the cost using cross-entropy and include regularization.
+- Implement backpropagation to compute the gradients.
+- Return gradients unrolled back into a single vector using `grad = [Theta1_grad(:); Theta2_grad(:)]`.
+
+---
+
+#### 5. `function [classes] = predict_classes(X, weights, input_layer_size, hidden_layer_size, output_layer_size)`
+
+**Purpose**:  
+Predicts the class labels for a given set of test examples using a trained neural network.
+
+**Parameters**:
+- `X`: Feature matrix for the test set.
+- `weights`: A vector containing all weights (unrolled Θ(1) and Θ(2)).
+- `input_layer_size`: Number of input neurons.
+- `hidden_layer_size`: Number of hidden layer neurons.
+- `output_layer_size`: Number of output neurons (i.e., number of possible classes).
+
+**Returns**:
+- `classes`: A column vector of predicted class indices for each test example.
+
+**Notes**:
+- This function performs forward propagation only.
+- Use `reshape()` to reconstruct Θ(1) and Θ(2) from the `weights` vector.
+- Use the `sigmoid` activation function.
+- The prediction corresponds to the index (class) of the highest activation in the output layer.
+
 
 ## Running the Tasks
 
