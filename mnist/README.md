@@ -99,27 +99,25 @@ This leads to a **fully connected neural network** architecture.
 #### Network Architecture Overview
 
 - The network consists of **three layers**:
-  - **Input layer**: size \( s_1 \)
-  - **Hidden layer**: size \( s_2 \)
-  - **Output layer**: size \( s_3 = K \), where \( K \) is the number of output classes
+  - **Input layer**: size $$s_1$$
+  - **Hidden layer**: size $$s_2$$
+  - **Output layer**: size $$s_3 = K$$, where $$K$$ is the number of output classes
 
 > In this specific case:
 > - Input: 400 neurons (corresponding to the 20×20 grayscale image pixels)
 > - Hidden: 25 neurons
 > - Output: 10 neurons (for digits 0 through 9)
 
-#### Key Concepts and Notation
-
-- **Activation values**:
+**Activation values**:
   - For the **input layer**, activations are the actual **input data**: the 400 pixel values.
   - For the **output layer**, activations are the **predictions** (probabilities for each class).
   - For **hidden and output layers**, activations are computed based on the activations from the **previous layer** (fully connected).
 
-- **Weights (parameters)** between layers:
+**Weights (parameters)** between layers:
   - Between input and hidden layer:  
-    \( \Theta^{(1)} \in \mathbb{R}^{s_2 \times (s_1 + 1)} \)
+    $$\Theta^{(1)} \in \mathbb{R}^{s_2 \times (s_1 + 1)}$$
   - Between hidden and output layer:  
-    \( \Theta^{(2)} \in \mathbb{R}^{s_3 \times (s_2 + 1)} \)
+    $$\Theta^{(2)} \in \mathbb{R}^{s_3 \times (s_2 + 1)}$$
 
 These matrices store the **learned parameters** (weights) of the network and include an extra column to handle the **bias unit**.
 
